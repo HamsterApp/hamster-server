@@ -8,8 +8,8 @@ const makeTagObject = (doc) => {
     id: doc._id,
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,
-    createdBy: doc.createdBy,
-    updatedBy: doc.updatedBy,
+    createdBy: doc.createdBy || null,
+    updatedBy: doc.updatedBy || null,
     label: doc.label,
     description: doc.description,
     color: doc.color,
@@ -33,6 +33,7 @@ module.exports = (server) => {
     req.accepts("application/json");
 
     const newTag = new Tag(req.body);
+    newTag.createdBy = jwt.getUserId(req);
 
     try {
       const insertedTag = await newTag.save();
@@ -53,6 +54,7 @@ module.exports = (server) => {
     let udpate = req.body;
     // delete read-only fields if passed
     delete update._id;
+    delete update.createdBy;
     delete update.createdAt;
     delete update.updatedAt;
 
