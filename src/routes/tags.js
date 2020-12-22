@@ -34,6 +34,7 @@ module.exports = (server) => {
 
     const newTag = new Tag(req.body);
     newTag.createdBy = jwt.getUserId(req);
+    newTag.updatedBy = jwt.getUserId(req);
 
     try {
       const insertedTag = await newTag.save();

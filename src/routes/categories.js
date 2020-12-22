@@ -35,6 +35,7 @@ module.exports = (server) => {
 
     let newCategory = new Category(req.body);
     newCategory.createdBy = jwt.getUserId(req);
+    newCategory.updatedBy = jwt.getUserId(req);
 
     try {
       const insertedCategory = await newCategory.save();
