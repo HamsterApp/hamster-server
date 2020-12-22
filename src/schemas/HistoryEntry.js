@@ -17,6 +17,11 @@ const HistoryEntrySchema = new mongoose.Schema(
       ref: "StockEntry",
       required: true,
     },
+    item: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Item",
+      required: true,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

@@ -6,6 +6,11 @@ const StockEntrySchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    item: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Item",
+      required: true,
+    },
     location: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "StorageLocation",
