@@ -91,7 +91,9 @@ module.exports = (server) => {
 
   server.del("/api/categories/:id", async (req, res, next) => {
     try {
-      const deletedCategory = Category.findOneAndRemove({ _id: req.params.id });
+      const deletedCategory = await Category.findOneAndRemove({
+        _id: req.params.id,
+      });
 
       if (deletedCategory === null) {
         // id not found
@@ -103,7 +105,7 @@ module.exports = (server) => {
       }
 
       // remove category from all foods
-      Item.updateMany(
+      await Item.updateMany(
         { category: req.params.id },
         { $set: { category: null, updatedBy: jwt.getUserId(req) } }
       );

@@ -93,7 +93,7 @@ module.exports = (server) => {
   // delete location
   server.del("/api/locations/:id", async (req, res, next) => {
     try {
-      const deletedLocation = StorageLocation.findOneAndRemove({
+      const deletedLocation = await StorageLocation.findOneAndRemove({
         _id: req.params.id,
       });
 
@@ -107,7 +107,7 @@ module.exports = (server) => {
       }
 
       // remove location from all foods
-      Item.updateMany(
+      await Item.updateMany(
         { location: req.params.id },
         { $set: { location: null, updatedBy: jwt.getUserId(req) } }
       );
