@@ -1,5 +1,7 @@
 const errors = require("restify-errors");
+const { update } = require("../schemas/Tag");
 const Tag = require("../schemas/Tag");
+const jwt = require("../util/jwt");
 
 const makeTagObject = (doc) => {
   return {
@@ -54,7 +56,8 @@ module.exports = (server) => {
     delete update.createdAt;
     delete update.updatedAt;
 
-    // TODO: update updatedBy field by user id in jwt
+    //update updatedBy field by user id in jwt
+    update.updatedBy = jwt.getUserId(req);
 
     try {
       const updatedTag = await Tag.findOneAndUpdate(

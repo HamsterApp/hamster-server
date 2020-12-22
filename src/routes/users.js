@@ -1,6 +1,6 @@
 const errors = require("restify-errors");
 const User = require("../schemas/User");
-const jsonwebtoken = require("jsonwebtoken");
+const jwt = require("../util/jwt");
 
 module.exports = (server) => {
   // get all users
@@ -44,10 +44,7 @@ module.exports = (server) => {
         };
 
         //if authenticated user is requested user: add preferences and email fields
-        const jwt = req.header("Authorization").split(" ")[1];
-        const decodedJwt = jsonwebtoken.decode(jwt);
-
-        if (decodedJwt.id === user._id.toString()) {
+        if (jwt.getUserId(req) === user._id.toString()) {
           // authorized user is requesting user
           response.email = user.email || null;
           response.preferences = user.preferences || {};
@@ -62,10 +59,7 @@ module.exports = (server) => {
   server.put("/api/users/:id", async (req, res, next) => {
     try {
       // check for matching jwt user and and requested id
-      const jwt = req.header("Authorization").split(" ")[1];
-      const decodedJwt = jsonwebtoken.decode(jwt);
-
-      if (decodedJwt.id !== req.params.id) {
+      if (jwt.getUserId(req) !== req.params.id) {
         // authorized user is requesting user
         return next(
           new errors.UnauthorizedError(
