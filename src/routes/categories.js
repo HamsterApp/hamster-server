@@ -1,6 +1,7 @@
 const errors = require("restify-errors");
 const Category = require("../schemas/Category");
 const Item = require("../schemas/Item");
+const Group = require("../schemas/Group");
 const jwt = require("../util/jwt");
 
 const makeCategoryObject = (doc) => {
@@ -108,6 +109,16 @@ module.exports = (server) => {
       await Item.updateMany(
         { category: req.params.id },
         { $set: { category: null, updatedBy: jwt.getUserId(req) } }
+      );
+      // remove category from all groups
+      await Group.updateMany(
+        { category: req.params.id },
+        { $set: { category: null, updatedBy: jwt.getUserId(req) } }
+      );
+      // update children
+      await Category.updateMany(
+        { parent: req.params.id },
+        { $set: { parent: null, updatedBy: jwt.getUserId(req) } }
       );
 
       res.send(makeCategoryObject(deletedCategory));

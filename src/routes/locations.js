@@ -1,6 +1,8 @@
 const errors = require("restify-errors");
 const StorageLocation = require("../schemas/StorageLocation");
 const Item = require("../schemas/Item");
+const Group = require("../schemas/Group");
+const StockEntry = require("../schemas/StockEntry");
 const jwt = require("../util/jwt");
 
 const makeLocationObject = (doc) => {
@@ -106,10 +108,25 @@ module.exports = (server) => {
         );
       }
 
-      // remove location from all foods
+      // remove default location from all foods
       await Item.updateMany(
+        { defaultLocation: req.params.id },
+        { $set: { defaultLocation: null, updatedBy: jwt.getUserId(req) } }
+      );
+      // remove default location from all foods
+      await Group.updateMany(
+        { defaultLocation: req.params.id },
+        { $set: { defaultLocation: null, updatedBy: jwt.getUserId(req) } }
+      );
+      // remove location from all stock entries
+      await StockEntry.updateMany(
         { location: req.params.id },
-        { $set: { location: null, updatedBy: jwt.getUserId(req) } }
+        { $set: { defaultLocation: null } }
+      );
+      // update children
+      await StorageLocation.updateMany(
+        { parent: req.params.id },
+        { $set: { parent: null } }
       );
 
       res.send(makeLocationObject(deletedLocation));
