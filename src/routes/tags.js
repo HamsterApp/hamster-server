@@ -1,5 +1,4 @@
 const errors = require("restify-errors");
-const { update } = require("../schemas/Tag");
 const Tag = require("../schemas/Tag");
 
 const makeTagObject = (doc) => {
@@ -82,7 +81,7 @@ module.exports = (server) => {
     }
   });
 
-  server.delete("/api/tag/:id", async (req, res, next) => {
+  server.del("/api/tag/:id", async (req, res, next) => {
     try {
       // TODO: check if tag is used by any food
 

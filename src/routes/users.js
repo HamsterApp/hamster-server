@@ -1,5 +1,6 @@
 const errors = require("restify-errors");
 const User = require("../schemas/User");
+const jsonwebtoken = require("jsonwebtoken");
 
 module.exports = (server) => {
   // get all users
@@ -12,7 +13,7 @@ module.exports = (server) => {
           id: u._id,
           username: u.username,
           displayName: u.displayName,
-          avatar: u.avatar,
+          avatar: u.avatar || null,
         }))
       );
 
@@ -39,10 +40,18 @@ module.exports = (server) => {
           id: user._id,
           username: user.username,
           displayName: user.displayName,
-          avatar: user.avatar,
+          avatar: user.avatar || null,
         };
 
-        //TODO: if authenticated user is requested user: add preferences and email fields
+        //if authenticated user is requested user: add preferences and email fields
+        const jwt = req.header("Authorization").split(" ")[1];
+        const decodedJwt = jsonwebtoken.decode(jwt);
+
+        if (decodedJwt.id === user._id.toString()) {
+          // authorized user is requesting user
+          response.email = user.email || null;
+          response.preferences = user.preferences || {};
+        }
 
         res.send(response);
         next();
@@ -52,7 +61,18 @@ module.exports = (server) => {
 
   server.put("/api/users/:id", async (req, res, next) => {
     try {
-      // TODO: check for matching jwt user and and requested id
+      // check for matching jwt user and and requested id
+      const jwt = req.header("Authorization").split(" ")[1];
+      const decodedJwt = jsonwebtoken.decode(jwt);
+
+      if (decodedJwt.id !== req.params.id) {
+        // authorized user is requesting user
+        return next(
+          new errors.UnauthorizedError(
+            "Authorized and requested user do not match"
+          )
+        );
+      }
 
       let update = req.body;
 
