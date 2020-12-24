@@ -19,10 +19,15 @@ const makeStockObject = (doc) => {
 module.exports = (server) => {
   // get stock entrief for specific item by item id
   server.get("/api/items/:id/stock", async (req, res, next) => {
-    // TODO: query parameters to only fetch non-consumed entries
+    // parse query parameters to only fetch non-consumed entries
+    let filter = { item: req.params.id };
+    if (req.query.consumed === false) {
+      // only non-consumed entries requested
+      filter = { $and: [{ item: req.params.id }, { consumed: false }] };
+    }
 
     try {
-      const entries = await StockEntry.find({ item: req.params.id });
+      const entries = await StockEntry.find(filter);
       res.send(entries.map((e) => makeStockObject(e)));
       next();
     } catch (error) {

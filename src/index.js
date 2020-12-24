@@ -14,6 +14,7 @@ const server = restify.createServer({
 
 // middlewares
 server.use(logger("dev"));
+server.use(restify.plugins.queryParser());
 server.use(
   restify.plugins.bodyParser({
     mapParams: true,
