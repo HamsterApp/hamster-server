@@ -39,6 +39,15 @@ const cors = corsMiddleware({
 server.pre(cors.preflight);
 server.use(cors.actual);
 
+// response delay for testing
+if (config.ARTIFICIAL_DELAY) {
+  server.use((req, res, next) => {
+    setTimeout(() => {
+      next();
+    }, config.ARTIFICIAL_DELAY);
+  });
+}
+
 // mongodb connection
 server.listen(config.PORT, () => {
   mongoose
