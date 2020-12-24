@@ -9,7 +9,7 @@ const HistoryEntrySchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["added", "opened", "consumed", "edited"],
+      enum: ["added", "opened", "consumed"],
       default: "added",
     },
     entry: {
