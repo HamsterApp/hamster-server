@@ -1,0 +1,35 @@
+{
+  "units": [
+    {
+      "name": "Kilogram",
+      "symbol": "kg"
+    },
+    {
+      "name": "Gram",
+      "symbol": "g"
+    },
+    {
+      "name": "Liter",
+      "symbol": "l"
+    },
+    {
+      "name": "Milliliter",
+      "symbol": "ml"
+    },
+    {
+      "name": "Can",
+      "symbol": "Can"
+    },
+    {
+      "name": "Pack",
+      "symbol": "Pck"
+    }
+  ],
+  "users": [
+    {
+      "username": "admin",
+      "password": "admin",
+      "displayName": "Admin"
+    }
+  ]
+}

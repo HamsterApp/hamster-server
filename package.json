@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "user": "node src/usersmgr.js"
+    "user": "node src/usersmgr.js",
+    "migrate": "node src/migration/migrate.js"
   },
   "author": "Steffen Schön",
   "license": "MIT",
