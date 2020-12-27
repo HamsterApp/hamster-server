@@ -4,13 +4,16 @@ const logger = require("morgan");
 const config = require("./config");
 const restifyJwt = require("restify-jwt-community");
 const mongoose = require("mongoose");
-const { el } = require("date-fns/locale");
+const pjson = require("../package.json");
 
 require("dotenv").config();
 
+console.log(`Starting server v${pjson.version}`);
+console.log("Loaded configuration:", config);
+
 const server = restify.createServer({
-  name: "hamster-api",
-  version: "1.0.0",
+  name: pjson.name,
+  version: pjson.version,
 });
 
 // middlewares
@@ -68,13 +71,15 @@ server.listen(config.PORT, () => {
     })
     .catch((err) => {
       console.log("Could not connect to MongoDB", err);
+      process.exit(1);
     });
 });
 
 const db = mongoose.connection;
 
 db.on("error", (err) => {
-  console.log(err);
+  console.log("MongoDB error", err);
+  process.exit(1);
 });
 
 db.once("open", () => {
