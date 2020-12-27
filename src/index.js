@@ -25,12 +25,10 @@ server.use(
 );
 server.pre(restify.pre.sanitizePath());
 
-if (config.USE_AUTHENTICATION) {
-  // protect routes using JWT
-  server.use(
-    restifyJwt({ secret: config.JWT_SECRET }).unless({ path: ["/api/auth"] })
-  );
-}
+// protect routes using JWT
+server.use(
+  restifyJwt({ secret: config.JWT_SECRET }).unless({ path: ["/api/auth"] })
+);
 
 // cors
 const cors = corsMiddleware({
@@ -71,6 +69,7 @@ db.on("error", (err) => {
 
 db.once("open", () => {
   // setup routes
+  require("./routes/meta")(server);
   require("./routes/history")(server);
   require("./routes/stock")(server);
   require("./routes/auth")(server);

@@ -10,7 +10,10 @@ module.exports = (server) => {
   server.get("/api/items", async (req, res, next) => {
     try {
       const items = await Item.find();
-      res.send(items.map((i) => makeItemObject(i)));
+      // res.send(items);
+      res.send(
+        await Promise.all(items.map(async (i) => await makeItemObject(i)))
+      );
       next();
     } catch (error) {
       next(new errors.InternalServerError(error));
@@ -31,7 +34,7 @@ module.exports = (server) => {
         );
       }
 
-      res.send(makeItemObject(item));
+      res.send(await makeItemObject(item));
       next();
     } catch (error) {
       next(new errors.InternalServerError(error));
@@ -49,8 +52,8 @@ module.exports = (server) => {
     try {
       const insertedItem = await newItem.save();
 
-      res.send(201, makeItemObject(insertedItem, false));
-      console.log("Created item", makeItemObject(insertedItem, false));
+      res.send(201, await makeItemObject(insertedItem, false));
+      console.log("Created item", await makeItemObject(insertedItem, false));
       next();
     } catch (error) {
       if (error.name === "ValidationError") {
@@ -86,8 +89,8 @@ module.exports = (server) => {
         );
       }
 
-      res.send(makeItemObject(updatedItem));
-      console.log("Updated item", makeItemObject(updatedItem));
+      res.send(await makeItemObject(updatedItem));
+      console.log("Updated item", await makeItemObject(updatedItem));
       next();
     } catch (error) {
       if (error.name === "ValidationError") {
@@ -113,8 +116,8 @@ module.exports = (server) => {
       await StockEntry.deleteMany({ item: req.params.id });
       await HistoryEntry.deleteMany({ item: req.params.id });
 
-      res.send(makeItemObject(deletedItem, false));
-      console.log("Deleted item", makeItemObject(deletedItem, false));
+      res.send(await makeItemObject(deletedItem, false));
+      console.log("Deleted item", await makeItemObject(deletedItem, false));
       next();
     } catch (error) {
       return next(new errors.InternalServerError(error));
