@@ -1,10 +1,108 @@
+#!/usr/bin/env node
+
 const mongoose = require("mongoose");
 const User = require("./schemas/User");
 const config = require("./config");
+const objs = require("./util/docToObj");
+const yargs = require("yargs/yargs");
+const { hideBin } = require("yargs/helpers");
 
+// list all users in the database or specific user when id or username is specified
+const listUsers = async (identifier = null) => {
+  try {
+    if (identifier) {
+      // specific user
+
+      const filter = mongoose.Types.ObjectId.isValid(identifier)
+        ? { _id: identifier }
+        : { username: identifier };
+
+      const user = await User.findOne(filter);
+
+      if (user === null) {
+        console.log(`No user identified by ${identifier}`);
+        return;
+      }
+
+      console.log(objs.makeUserObject(user));
+    } else {
+      // all users
+      const allUsers = await User.find();
+
+      if (allUsers.length === 0) {
+        console.log("No users");
+      } else {
+        console.log(`Listing ${allUsers.length} users`);
+        console.log(allUsers.map((u) => objs.makeUserObject(u)));
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// create a new user
+const createUser = async (username, password, displayName, email, avatar) => {
+  try {
+    const newUser = new User({
+      username,
+      password,
+      displayName,
+      email,
+      avatar,
+    });
+
+    const insertedUser = await newUser.save();
+    console.log("Created new user", objs.makeUserObject(insertedUser));
+  } catch (error) {
+    console.log("Could not create new user", error);
+  }
+};
+
+const deleteUser = async (identifier) => {
+  try {
+    const filter = mongoose.Types.ObjectId.isValid(identifier)
+      ? { _id: identifier }
+      : { username: identifier };
+
+    const deletedUser = await User.findOneAndRemove(filter);
+
+    if (deletedUser === null) {
+      console.log(`No user identified by ${identifier}`);
+      return;
+    }
+
+    console.log(`Deleted user ${identifier}`);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const updateUser = async (identifier, field, value) => {
+  try {
+    const filter = mongoose.Types.ObjectId.isValid(identifier)
+      ? { _id: identifier }
+      : { username: identifier };
+
+    const update = { [field]: value };
+    const updatedUser = await User.findOneAndUpdate(filter, update, {
+      new: true,
+    });
+
+    if (updatedUser === null) {
+      console.log(`No user identified by ${identifier}`);
+      return;
+    }
+
+    console.log(`Updated user ${identifier}`, objs.makeUserObject(updatedUser));
+  } catch (error) {
+    console.log("Could not update user", error);
+  }
+};
+
+// script entry point
 (async () => {
-  const command = process.argv[2];
-
+  // connect to database
   mongoose.connect(config.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -17,83 +115,74 @@ const config = require("./config");
     console.log(err);
   });
 
-  if (command === "list") {
-    // list all users in the database
-    try {
-      const allUsers = await User.find({});
-
-      if (allUsers.length === 0) {
-        console.log("No users");
-      } else {
-        console.log(`Listing ${allUsers.length} users`);
-        console.log(allUsers);
+  // parse command line args
+  yargs(hideBin(process.argv))
+    .command(
+      "list [identifier]",
+      "List all or specific user",
+      (y) =>
+        y.positional("identifier", {
+          describe: "User ID or username",
+          default: null,
+        }),
+      async (argv) => {
+        await listUsers(argv.identifier);
       }
-    } catch (e) {
-      console.log(e);
-    }
-  } else if (command === "create") {
-    // create new user by supplied data:
-    // argv[3] = email
-    // argv[4] = name
-    // argv[5] = plaintext password
-
-    const username = process.argv[3];
-    const display = process.argv[4];
-    const passwordPlain = process.argv[5];
-
-    console.log(`Creating new user ${display} (${username})...`);
-
-    const newUser = new User({
-      username: username,
-      displayName: display,
-      password: passwordPlain,
-    });
-
-    try {
-      const user = await newUser.save();
-      console.log(`Created user with ID ${user._id}`);
-    } catch (e) {
-      console.log("Could not create user");
-      console.log(e);
-    }
-  } else if (command === "delete") {
-    const username = process.argv[3];
-
-    try {
-      const res = await User.deleteOne({ username: username });
-
-      if (res.deletedCount === 0) {
-        console.log(`There is no user with username "${username}"`);
-      } else {
-        console.log(`Deleted user ${username}`);
+    )
+    .command(
+      "create <username> <password> <displayName> [email] [avatar]",
+      "Create a new user",
+      (y) => {
+        y.positional("username", { describe: "Username" });
+        y.positional("password", { describe: "Password" });
+        y.positional("displayName", { describe: "Name to display in UI" });
+        y.positional("email", { describe: "E-Mail address", default: null });
+        y.positional("avatar", {
+          describe: "URL to user avatar image",
+          default: null,
+        });
+      },
+      async (argv) => {
+        await createUser(
+          argv.username,
+          argv.password,
+          argv.displayName,
+          argv.email,
+          argv.avatar
+        );
       }
-    } catch (e) {
-      console.log("Could not delete user");
-      console.log(e);
-    }
-  } else if (command === "update") {
-    const id = process.argv[3];
-    const field = process.argv[4];
-    const value = process.argv[5];
-
-    // update user
-    const update = {};
-    update[field] = value;
-
-    const updatedUser = await User.findOneAndUpdate({ _id: id }, update, {
-      new: true,
-    });
-
-    if (updatedUser === null) {
-      console.log(`There is no user with ID ${id}`);
-    } else {
-      console.log(`Updated user with ID ${id} to ${updatedUser}`);
-    }
-
-    /*if (field !== "username" || field !== "display_name" || field !== "password") {
-      // invalid argument for field
-      console.log(`Field ${field} is not valid. Allowed values are username, display_name and password`);
-    }else {
-    }*/
-  }
-})().finally(() => process.exit(0));
+    )
+    .command(
+      "delete <identifier>",
+      "Deletes a user",
+      (y) => {
+        y.positional("identifier", { describe: "User ID or username" });
+      },
+      async (argv) => {
+        await deleteUser(argv.identifier);
+      }
+    )
+    .command(
+      "update <identifier> <field> <value>",
+      "Updates a property of a user",
+      (y) => {
+        y.positional("identifier", {
+          describe: "User ID or username",
+        });
+        y.positional("field", {
+          describe: "Name of the property to update",
+          choices: ["username", "displayName", "password", "email", "avatar"],
+        });
+        y.positional("value", {
+          describe: "New value for the specified field",
+        });
+      },
+      async (argv) => {
+        await updateUser(argv.identifier, argv.field, argv.value);
+      }
+    )
+    .onFinishCommand(() => process.exit(0))
+    .help()
+    .wrap(72)
+    .parse();
+})();

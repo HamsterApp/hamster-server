@@ -123,4 +123,14 @@ module.exports = {
       symbol: doc.symbol,
     };
   },
+  makeUserObject: (doc) => {
+    return {
+      id: doc._id,
+      username: doc.username,
+      displayName: doc.displayName,
+      email: doc.email || null,
+      avatar: doc.avatar || null,
+      preferences: doc.preferences || {},
+    };
+  },
 };
