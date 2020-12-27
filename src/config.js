@@ -13,4 +13,6 @@ module.exports = {
   JWT_EXPIRATION_SPAN: process.env.JWT_EXPIRATION_SPAN || "60m",
   // whether to add artificial delay to responses for testing: either false or delay in ms
   ARTIFICIAL_DELAY: process.env.ARTIFICIAL_DELAY || false,
+  // default amount of time in days prior to best before date to flag a stock entry as almost expired
+  DEFAUL_ALMOST_EXPIRED_SPAN: process.env.DEFAUL_ALMOST_EXPIRED_SPAN || 30,
 };

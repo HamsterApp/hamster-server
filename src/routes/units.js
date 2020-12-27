@@ -2,14 +2,7 @@ const errors = require("restify-errors");
 const Unit = require("../schemas/Unit");
 const Item = require("../schemas/Item");
 const jwt = require("../util/jwt");
-
-const makeUnitObject = (doc) => {
-  return {
-    id: doc._id,
-    name: doc.name,
-    symbol: doc.symbol,
-  };
-};
+const { makeUnitObject } = require("../util/docToObj");
 
 module.exports = (server) => {
   // get all units

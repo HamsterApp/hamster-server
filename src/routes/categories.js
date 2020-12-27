@@ -3,19 +3,7 @@ const Category = require("../schemas/Category");
 const Item = require("../schemas/Item");
 const Group = require("../schemas/Group");
 const jwt = require("../util/jwt");
-
-const makeCategoryObject = (doc) => {
-  return {
-    id: doc._id,
-    name: doc._name,
-    description: doc.description,
-    parent: doc.parent || null,
-    createdAt: doc.createdAt,
-    updatedAt: doc.updatedAt,
-    createdBy: doc.createdBy || null,
-    updatedBy: doc.updatedBy || null,
-  };
-};
+const { makeCategoryObject } = require("../util/docToObj");
 
 module.exports = (server) => {
   // get all categories

@@ -2,19 +2,7 @@ const errors = require("restify-errors");
 const StockEntry = require("../schemas/StockEntry");
 const HistoryEntry = require("../schemas/HistoryEntry");
 const jwt = require("../util/jwt");
-
-const makeStockObject = (doc) => {
-  return {
-    id: doc._id,
-    item: doc.item,
-    bestBefore: doc.item || null,
-    opened: doc.opened,
-    consumed: doc.consumed,
-    location: doc.location || null,
-    price: doc.price || null,
-    store: doc.store || null,
-  };
-};
+const { makeStockObject } = require("../util/docToObj");
 
 module.exports = (server) => {
   // get stock entrief for specific item by item id
@@ -40,6 +28,8 @@ module.exports = (server) => {
     const entry = new StockEntry(req.body);
     delete entry.id;
     entry.item = req.params.id;
+
+    // TODO: delete time from bestBefore field (set h,m,s,ms to 0)
 
     try {
       const insertedEntry = await entry.save();
@@ -72,6 +62,8 @@ module.exports = (server) => {
   server.put("/api/stock/:id", async (req, res, next) => {
     const update = req.body;
     delete update.id;
+
+    // TODO: delete time from bestBefore field (set h,m,s,ms to 0)
 
     try {
       // get entry before update

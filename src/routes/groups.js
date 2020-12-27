@@ -2,20 +2,7 @@ const errors = require("restify-errors");
 const Group = require("../schemas/Group");
 const Item = require("../schemas/Item");
 const jwt = require("../util/jwt");
-
-const makeGroupObject = (doc) => {
-  return {
-    id: doc._id,
-    createdAt: doc.createdAt,
-    updatedAt: doc.updatedAt,
-    createdBy: doc.createdBy || null,
-    updatedBy: doc.updatedBy || null,
-    name: doc.name,
-    description: doc.description,
-    category: doc.category || null,
-    defaultLocation: doc.defaultLocation || null,
-  };
-};
+const { makeGroupObject } = require("../util/docToObj");
 
 module.exports = (server) => {
   // get all groups

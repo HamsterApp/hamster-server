@@ -3,42 +3,7 @@ const Item = require("../schemas/Item");
 const StockEntry = require("../schemas/StockEntry");
 const HistoryEntry = require("../schemas/HistoryEntry");
 const jwt = require("../util/jwt");
-
-const makeItemObject = (doc, queryEntries = true) => {  
-  let numStockEntries = 0;
-
-  if (queryEntries) {
-    // query number of (non consumed) stock entries for this item
-    try {
-      numStockEntries = await StockEntry.countDocuments({$and: [{item: doc._id}, {consumed: false}]});
-    } catch (error) {
-      console.log(`Error while counting stock entries for item ${doc._id}`, error);
-      numStockEntries = 0;
-    }
-  }
-
-  return {
-    id: doc._id,
-    createdAt: doc.createdAt,
-    updatedAt: doc.updatedAt,
-    createdBy: doc.createdBy || null,
-    updatedBy: doc.updatedBy || null,
-    name: doc.name,
-    description: doc.description,
-    category: doc.category || null,
-    nutriments: doc.nutriments || [],
-    unit: doc.unit || null,
-    conversions: doc.conversions || null,
-    defaultLocation: doc.defaultLocation || null,
-    tags: doc.tags || [],
-    targetStock: doc.targetStock,
-    slug: doc.slug,
-    thumbnail: doc.thumbnail || null,
-    images: doc.images || null,
-    group: doc.group || null,
-    stock: numStockEntries,
-  };
-};
+const { makeItemObject } = require("../util/docToObj");
 
 module.exports = (server) => {
   // get all items

@@ -1,15 +1,6 @@
 const errors = require("restify-errors");
 const HistoryEntry = require("../schemas/HistoryEntry");
-
-const makeHistoryObject = (doc) => {
-  return {
-    id: doc._id,
-    type: doc.type,
-    entry: doc.entry,
-    item: doc.item,
-    user: doc.user || null,
-  };
-};
+const { makeHistoryObject } = require("../util/docToObj");
 
 module.exports = (server) => {
   // get all history entries for specific item by item id

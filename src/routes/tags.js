@@ -2,19 +2,7 @@ const errors = require("restify-errors");
 const { update } = require("../schemas/Tag");
 const Tag = require("../schemas/Tag");
 const jwt = require("../util/jwt");
-
-const makeTagObject = (doc) => {
-  return {
-    id: doc._id,
-    createdAt: doc.createdAt,
-    updatedAt: doc.updatedAt,
-    createdBy: doc.createdBy || null,
-    updatedBy: doc.updatedBy || null,
-    label: doc.label,
-    description: doc.description,
-    color: doc.color,
-  };
-};
+const { makeTagObject } = require("../util/docToObj");
 
 module.exports = (server) => {
   // get all tags

@@ -4,19 +4,7 @@ const Item = require("../schemas/Item");
 const Group = require("../schemas/Group");
 const StockEntry = require("../schemas/StockEntry");
 const jwt = require("../util/jwt");
-
-const makeLocationObject = (doc) => {
-  return {
-    id: doc._id,
-    createdAt: doc.createdAt,
-    updatedAt: doc.updatedAt,
-    createdBy: doc.createdBy || null,
-    updatedBy: doc.updatedBy || null,
-    name: doc.name,
-    info: doc.info || {},
-    parent: doc.parent || null,
-  };
-};
+const { makeLocationObject } = require("../util/docToObj");
 
 module.exports = (server) => {
   // get all locations
