@@ -4,6 +4,7 @@ const logger = require("morgan");
 const config = require("./config");
 const restifyJwt = require("restify-jwt-community");
 const mongoose = require("mongoose");
+const { el } = require("date-fns/locale");
 
 require("dotenv").config();
 
@@ -25,10 +26,19 @@ server.use(
 );
 server.pre(restify.pre.sanitizePath());
 
-// protect routes using JWT
-server.use(
-  restifyJwt({ secret: config.JWT_SECRET }).unless({ path: ["/api/auth"] })
-);
+// protect non GET routes using JWT
+server.use((req, res, next) => {
+  if (req.method !== "GET") {
+    restifyJwt({ secret: config.JWT_SECRET }).unless({ path: ["/api/auth"] })(
+      req,
+      res,
+      next
+    );
+  } else {
+    // GET routes are public
+    next();
+  }
+});
 
 // cors
 const cors = corsMiddleware({
