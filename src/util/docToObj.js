@@ -64,6 +64,7 @@ module.exports = {
       updatedBy: doc.updatedBy || null,
       name: doc.name,
       description: doc.description,
+      ean: doc.ean || null,
       category: doc.category || null,
       nutriments: doc.nutriments || [],
       unit: doc.unit || null,
