@@ -20,19 +20,15 @@ const ItemSchema = new mongoose.Schema(
     },
     nutriments: [
       {
-        name: {
+        // NutrimentType key
+        type: {
           type: String,
           required: true,
         },
-        value: {
+        amount: {
           type: Number,
           required: true,
           default: 0,
-        },
-        unit: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Unit",
-          required: true,
         },
       },
     ],

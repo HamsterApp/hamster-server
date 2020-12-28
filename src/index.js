@@ -95,5 +95,6 @@ db.once("open", () => {
   require("./routes/tags")(server);
   require("./routes/units")(server);
   require("./routes/users")(server);
+  require("./routes/nutrimentTypes")(server);
   console.log(`Server listening for API requests on port ${config.PORT}`);
 });

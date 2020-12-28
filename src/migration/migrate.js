@@ -12,6 +12,7 @@ const StockEntry = require("../schemas/StockEntry");
 const StorageLocation = require("../schemas/StorageLocation");
 const Tag = require("../schemas/Tag");
 const Unit = require("../schemas/Unit");
+const NutrimentType = require("../schemas/NutrimentType");
 const User = require("../schemas/User");
 
 // perform migration and optional database wipe
@@ -121,6 +122,30 @@ const migrateData = async (locale, wipe) => {
       }
     }
     console.log("Units created");
+  }
+
+  // nutriment types
+  if (data.nutrimentTypes) {
+    console.log("Creating nutriment types... ");
+
+    for (const c of data.nutrimentTypes) {
+      const e = new NutrimentType(c);
+      try {
+        const exists = (await NutrimentType.findOne({ key: c.key })) !== null;
+
+        if (!exists) {
+          // insert user
+          await e.save();
+        } else {
+          console.log(
+            `Nutriment type with key ${c.key} already exists. Skipping`
+          );
+        }
+      } catch (error) {
+        console.log("Could not create nutriment type", c, error);
+      }
+    }
+    console.log("Nutriment types created");
   }
 
   // users

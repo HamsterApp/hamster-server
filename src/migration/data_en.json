@@ -31,5 +31,112 @@
       "password": "admin",
       "displayName": "Admin"
     }
+  ],
+  "nutrimentTypes": [
+    {
+      "key": "energy_kcal",
+      "name": "Energy (kcal)",
+      "unit": "kcal"
+    },
+    {
+      "key": "energy_kj",
+      "name": "Energy (kj)",
+      "unit": "kj"
+    },
+    {
+      "key": "carbs",
+      "name": "Carbohydrates",
+      "unit": "g"
+    },
+    {
+      "key": "protein",
+      "name": "Protein",
+      "unit": "g"
+    },
+    {
+      "key": "sugar",
+      "name": "Sugar",
+      "unit": "g"
+    },
+    {
+      "key": "fat",
+      "name": "Fat",
+      "unit": "g"
+    },
+    {
+      "key": "vit_a",
+      "name": "Vitamin A",
+      "unit": "mg"
+    },
+    {
+      "key": "vit_d",
+      "name": "Vitamin D",
+      "unit": "mg"
+    },
+    {
+      "key": "vit_e",
+      "name": "Vitamin E",
+      "unit": "mg"
+    },
+    {
+      "key": "vit_k",
+      "name": "Vitamin K",
+      "unit": "mg"
+    },
+    {
+      "key": "vit_c",
+      "name": "Vitamin C",
+      "unit": "mg"
+    },
+    {
+      "key": "vit_b1",
+      "name": "Vitamin B1",
+      "unit": "mg"
+    },
+    {
+      "key": "vit_b2",
+      "name": "Vitamin B2",
+      "unit": "mg"
+    },
+    {
+      "key": "vit_b3",
+      "name": "Vitamin B3",
+      "unit": "mg"
+    },
+    {
+      "key": "vit_b5",
+      "name": "Vitamin B5",
+      "unit": "mg"
+    },
+    {
+      "key": "vit_b6",
+      "name": "Vitamin B6",
+      "unit": "mg"
+    },
+    {
+      "key": "vit_b7",
+      "name": "Biotine",
+      "unit": "mg"
+    },
+    {
+      "key": "vit_b9",
+      "name": "Folate",
+      "unit": "mg"
+    },
+    {
+      "key": "vit_b12",
+      "name": "Vitamin B12",
+      "unit": "mg"
+    },
+    {
+      "key": "mg",
+      "name": "Magnesium",
+      "unit": "mg"
+    },
+    {
+      "key": "ca",
+      "name": "Calcium",
+      "unit": "mg"
+    }
   ]
 }

@@ -1,4 +1,5 @@
 const StockEntry = require("../schemas/StockEntry");
+const NutrimentType = require("../schemas/NutrimentType");
 
 module.exports = {
   makeCategoryObject: (doc) => {
@@ -41,6 +42,19 @@ module.exports = {
   makeItemObject: async (doc, queryEntries = true) => {
     let numStockEntries = 0;
 
+    const nutriments = [];
+    for (const nut of doc.nutriments) {
+      const type = await NutrimentType.findOne({ key: nut.type });
+      nutriments.push({
+        type: {
+          key: type.key,
+          name: type.name,
+          unit: type.unit,
+        },
+        amount: nut.amount,
+      });
+    }
+
     if (queryEntries) {
       // query number of (non consumed) stock entries for this item
       try {
@@ -66,7 +80,7 @@ module.exports = {
       description: doc.description,
       ean: doc.ean || null,
       category: doc.category || null,
-      nutriments: doc.nutriments || [],
+      nutriments: nutriments,
       unit: doc.unit || null,
       conversions: doc.conversions || null,
       defaultLocation: doc.defaultLocation || null,
