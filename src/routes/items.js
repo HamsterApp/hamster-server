@@ -73,11 +73,28 @@ module.exports = (server) => {
     delete update.createdAt;
     delete update.updatedAt;
 
+    // normalize nutriments
+    if (update.nutriments) {
+      const keyOnly = [];
+      for (const n of update.nutriments) {
+        if (n.type.key) {
+          keyOnly.push({
+            type: n.type.key,
+            amount: n.amount,
+          });
+        } else {
+          keyOnly.push(n);
+        }
+      }
+
+      update.nutriments = keyOnly;
+    }
+
     update.updatedBy = jwt.getUserId(req);
 
     try {
       const updatedItem = await Item.findOneAndUpdate(
-        { _id: req.param.id },
+        { _id: req.params.id },
         update,
         { new: true }
       );

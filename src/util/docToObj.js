@@ -35,6 +35,7 @@ module.exports = {
       type: doc.type,
       entry: doc.entry,
       item: doc.item,
+      date: doc.date,
       user: doc.user || null,
     };
   },
@@ -110,7 +111,7 @@ module.exports = {
     return {
       id: doc._id,
       item: doc.item,
-      bestBefore: doc.item || null,
+      bestBefore: doc.bestBefore || null,
       opened: doc.opened,
       consumed: doc.consumed,
       location: doc.location || null,

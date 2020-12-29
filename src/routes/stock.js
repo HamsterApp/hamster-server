@@ -1,4 +1,6 @@
 const errors = require("restify-errors");
+const startOfDay = require("date-fns/startOfDay");
+const parseISO = require("date-fns/parseISO");
 const StockEntry = require("../schemas/StockEntry");
 const HistoryEntry = require("../schemas/HistoryEntry");
 const jwt = require("../util/jwt");
@@ -29,7 +31,8 @@ module.exports = (server) => {
     delete entry.id;
     entry.item = req.params.id;
 
-    // TODO: delete time from bestBefore field (set h,m,s,ms to 0)
+    // delete time from bestBefore date
+    entry.bestBefore = startOfDay(parseISO(entry.bestBefore));
 
     try {
       const insertedEntry = await entry.save();
@@ -63,7 +66,10 @@ module.exports = (server) => {
     const update = req.body;
     delete update.id;
 
-    // TODO: delete time from bestBefore field (set h,m,s,ms to 0)
+    if (update.bestBefore) {
+      // delete time from bestBefore field
+      update.bestBefore = startOfDay(parseISO(update.bestBefore));
+    }
 
     try {
       // get entry before update
