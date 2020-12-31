@@ -35,7 +35,7 @@ module.exports = {
       type: doc.type,
       entry: doc.entry,
       item: doc.item,
-      date: doc.date,
+      timestamp: doc.timestamp,
       user: doc.user || null,
     };
   },

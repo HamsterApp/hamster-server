@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const HistoryEntrySchema = new mongoose.Schema(
   {
-    date: {
+    timestamp: {
       type: Date,
       required: true,
       default: Date.now,
